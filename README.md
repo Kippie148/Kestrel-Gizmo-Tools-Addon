@@ -1,4 +1,4 @@
-# Kestrel-Gizmo-Tools-addon
+# Kestrel-Gizmo-Tools-Addon
 This is a work in progress gizmo toolset for Lego City Undercover. It aims to simplify the process of analysing existing giz files, finding the right files to add new entries and converting the user input to work with the kestrel fusion launcher map-manager logic.
 
 ---
