@@ -62,8 +62,8 @@ Per rope entry (numbered, e.g. `tightrope1`, `tightrope2`, and an unnamed `tight
 ```
 
 Each rope name appears **twice**:
-- 1st occurrence: might be 4 "real" control points (the rope curve) + 2 additional slots that do not appear to contain valid positions (possibly separate parameters, not confirmed).
-- 2nd occurrence: 1 (or 2) point(s), sometimes identical to one of the 4 main points, sometimes a completely new standalone point — presumably an anchor point for interaction or possibly the spawning point for the start of end object of the rope.
+- 1st occurrence: the first to are the positions of the bases that get connected by the game itself. The other 2 are unknown and have weird placements as coördinates. + 2 or 1 additional slot(s) might be in there too that do not appear to contain valid positions (possibly separate parameters, not confirmed).
+- 2nd occurrence: 1 (or 2) point(s), sometimes identical to one of the 4 main points, sometimes a completely new standalone point — presumably an anchor point for interaction or possibly the spawning point for the start of end object of the rope. This needs to be investigated more.
 
 **Parsing stop condition:** as soon as an entry no longer yields a valid (x,y,z) triple, you have exited the TightRope section and are probably already in the regular object list (GizObstacle/GIZSIMPLEPROPOBJECT, etc.).
 
