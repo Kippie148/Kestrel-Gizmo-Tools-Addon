@@ -220,7 +220,7 @@ See `findNextValidName`, `isValidEntryAt`, and `exploreNamedPointSection` in the
 ```
 GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT,
 Ledge, TightRope, Grapple, MiniCut, Door, Blowup, Ladder, GizSwitch,
-GizTimer, GizSuperBuild, Message, GrappleSatellite, DefaultDecal
+GizTimer, GizSuperBuild, Message, DefaultDecal
 ```
 
 Not every name in this list has already been successfully parsed as a separate section type — some are included here purely because the names were visible in raw byte dumps.
