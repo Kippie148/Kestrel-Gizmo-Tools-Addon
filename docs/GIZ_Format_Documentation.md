@@ -22,7 +22,7 @@ The general structure of the header is pretty clear, only the second variable is
 
 ```
 [uint32: header name length][ASCII: type specifier]
-[uint32: upcoming block size starts after these 4 bytes]
+[uint32: upcoming block size, starts after these 4 bytes]
 [uint32: some kind of type identifier]
 [uint32: amount of entries in this block]
 ```
