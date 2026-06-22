@@ -18,8 +18,7 @@ These types are not all fully understood yet and have been written slightly diff
 
 ## Special Types Headers
 
-The general structure of the header is pretty clear only the second variable is not fully sure but very likely right. Some types do seem to use more then just the template header but that is further specified in the individual documentation.
-Generic header:
+The general structure of the header is pretty clear, only the second variable is not fully sure but very likely right. Some types do seem to use more then just the template header but that is further specified in the individual documentation.
 
 ```
 [uint32: header name length][ASCII: type specifier]
