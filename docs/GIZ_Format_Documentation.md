@@ -12,20 +12,29 @@ A `.GIZ` file broadly consists of:
 
 Sections are not strictly defined by offset and files can have blocks mixed in different ways; they must be located by searching for known class names/section names as anchor points within the buffer.
 
-## Special types of gizmo's
+# Special Types of Gizmo's
 
-These types are not all fully understood yet and have been written slightly different based on what they need to do. The types below are partially reverse engineered but do they are not understood enough to write them yet. Some interpretation is still speculation. Only ledge can be parsed pretty precisely. Grapple and tightrope do have a pretty good patern but they are not confirmed yet. The headers also need some extra research for every special type. Some of the new special types are also only tested on SF_ROOFTOP.GIZ for now.
+These types are not all fully understood yet and have been written slightly different based on what they need to do. The types below are partially reverse engineered but do they are not understood enough to write them yet. Some interpretation is still speculation. Only ledge can be parsed pretty precisely. Grapple, Tube and Tightrope do have a pretty good patern but they are not confirmed yet. The headers are now mostly understandable but a few have extra params that are unknown. Some of the new special types are also only tested on SF_ROOFTOP.GIZ for now.
+
+## Special Types Headers
+
+The general structure of the header is pretty clear only the second variable is not fully sure but very likely right. Some types do seem to use more then just the template header but that is further specified in the individual documentation.
+Generic header:
+
+```
+[uint32: header name length][ASCII: type specifier]
+[uint32: upcoming block size starts after these 4 bytes]
+[uint32: some kind of type identifier]
+[uint32: amount of entries in this block]
+```
 
 ## Ledge Section
 
 Header signature: 4-byte length prefix (`05 00 00 00`) followed by ASCII `"Ledge"` (no null terminator on the class name itself — the length is explicit, just like with coins).
 
 ```
-[uint32: length=5]["Ledge"]
-[uint32: header val1, unknown, varies greatly per file]
-[uint32: header val2, possibly a count — not yet firmly confirmed]
-[uint32: header val3, unknown]
-[uint32: header val4, often 0]
+[generic template header]
+[uint32: might be a extra parameter but unknown]
 [2 bytes unknown]
 ```
 
@@ -39,7 +48,7 @@ This is followed by a series of individual, named point entries (`ledge1`, `ledg
 [footer, variable length — mostly zeros]
 ```
 
-Each ledge refers to another ledge name through the `linkedTo` field. This forms a **graph** (not a strict linear chain) — some links are bidirectional (A→B and later B→A with nearly identical positions), while others are one-way or entirely absent (standalone ledges without a link but this might be a problem in the parsing system now).
+Each ledge refers to another ledge name through the `linkedTo` field. This forms a **graph** (not a strict linear chain) — some links are bidirectional (A→B and later B→A with nearly identical positions), while others are one-way or entirely absent (standalone ledges without a link but this might be a problem in the parsing system now or just a thing the game does).
 
 **Recommended processing:** treat `linkedTo` as an edge in a graph and determine connected components (BFS/DFS) to group related ledges together — see `groupLedgesByConnection` in the parser. Verified: chains with small, incremental position changes (for example only along the z-axis) correspond to the parkour hanging ledge structure which probably get their inbetween pole position and length determined by the positions of the ledge entries.
 
@@ -47,11 +56,11 @@ Each ledge refers to another ledge name through the `linkedTo` field. This forms
 
 ## TightRope Section
 
-Header: ASCII `"TightRope"`, followed by 3 header integers (the third may be a segment/point indicator, but this has not been firmly confirmed).
+Header signature: 4-bytes length prefix + ASCII `"TightRope"`, followed by the header. 
 
 ```
-["TightRope"]
-[uint32 x3: header ints]
+[uint32: length=9]["TightRope"]
+[Generic template header]
 ```
 
 Per rope entry (numbered, e.g. `tightrope1`, `tightrope2`, and an unnamed `tightrope`):
@@ -71,15 +80,15 @@ Each rope name appears **twice**:
 
 ## Grapple Section
 
-Header: 4-byte length prefix + ASCII `"Grapple"` (length 7, no null required).
+Header: 4-byte length prefix + ASCII `"Grapple"` + header ints.
 
 ```
 [uint32: length=7]["Grapple"]
-[uint32 x4: header ints — val3 and val4 were both 4 in the examined file]
-[variable-length remainder of the header before the first name]
+[Generic template header]
+[unknown variable-length remainder of the header before the first name]
 ```
 
-Per grapple point (numbered with gaps, e.g. `grapple1`, `grapple2`, `grapple4`, and an unnamed `grapple`):
+Per grapple point (numbered with gaps by devs, e.g. `grapple1`, `grapple2`, `grapple4`, and an unnamed `grapple`):
 
 ```
 [1 byte: nameLen][name][00 null]
@@ -105,10 +114,8 @@ Contains a varying number of small floats per grapple (often around 0.5, or an o
 
 **Hypothesis (not yet 100% confirmed, but consistent with in-game behavior):** grapples with radius ≈1.7/flagB 35 are points that trigger an interaction popup from a larger range and/or multiple angles; grapples with a smaller radius/flagB 3 are stricter, short-range triggers. One grapple with a notable angle value (-71.68°) in the 2nd footer may have a unique swing direction or might be a trigger for a specific action.
 
-**Section boundary detection:** the Grapple section continues until the next known section header (e.g. "Ledge") begins — note that the last entry's 2nd footer may sometimes flow directly into the next section header.
 
-
-## Coins And Other Pickups Section (GizmoPickup)
+# Coins And Other Pickups Section (GizmoPickup)
 
 Header signature: hex `47697a6d6f5069636b7570` = ASCII `"GizmoPickup"`.
 
@@ -148,7 +155,7 @@ These are know to have issues with the coins and pickups parser. They seem to ha
 - MOONBASE2_ROCKETCOCKPIT.GIZ
 ```
 
-## Regular Objects (GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT, ...)
+# Regular Objects (GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT, ...)
 
 These objects share one common pattern. There is **no global header with an entry count** for this entire list — the parser must use known class names as anchors and search backward from them to find the start of an entry.
 
@@ -170,7 +177,7 @@ These objects share one common pattern. There is **no global header with an entr
 
 The type field is read **individually for each entry** — there is no "last seen type" inheritance. Known class names are only needed to (a) locate the first starting point in the buffer and (b) validate the boundary with the next entry.
 
-### EndLine Structure (Variable Length)
+## EndLine Structure (Variable Length)
 
 Based what is know now about the endline but most is just guessing:
 
