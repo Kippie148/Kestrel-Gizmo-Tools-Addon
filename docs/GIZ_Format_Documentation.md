@@ -1,232 +1,321 @@
-# GIZ File Format — Reverse Engineering Documentation
+# GIZ File Format (Lego City Undercover) — Reverse Engineering Documentation
 
-This document describes the findings from reverse engineering the `.GIZ` file format used in LEGO City Undercover. The format is binary, little-endian, and contains multiple sections, each with its own structure. Not everything has been fully decoded — unknown or uncertain fields are marked as such.
+This document describes the findings from reverse engineering the `.GIZ` file format used in LEGO City Undercover. The format is binary, little-endian, and contains multiple sections, each with its own structure. Not everything is already understood — unknown or uncertain fields are marked as such.
 
 ## General File Structure
 
 A `.GIZ` file broadly consists of:
 
-1. An **special types section** at the beginning of the file there are some unknown specific types for cutscens or special types like ledges, grapple or cutscenes.  There is also extra information that is used by later objects.
-2. A block with **coins gizmo's**. These are have their own format that is different from regular objects. 
-3. One or more **object sections**, which have specific types based on how they have to be spawned and work in a predictable format.
+1. An **special types section** at the beginning of the file there are some specific types of gizmo's like ledges, grapple or MiniCut. These are using a older format also known in classic tt lego games like TCS, LIJ1 and LB1 but those games only use these special types.
+2. A block with **pickup gizmo's**. This is technicly a special type but the block is pretty important and exists in every file so i mention it here specificly. 
+3. An **object sections**, which have specific types based on how they have to be spawned and work in a predictable format and the block looks to be always the last one (not fully confirmed).
 
 Sections are not strictly defined by offset and files can have blocks mixed in different ways; they must be located by searching for known class names/section names as anchor points within the buffer.
 
-# Special Types of Gizmo's
+## Special types of gizmo's
 
-These types are not all fully understood yet and have been written slightly different based on what they need to do. The types below are partially reverse engineered but do they are not understood enough to write them yet. Some interpretation is still speculation. Only ledge can be parsed pretty precisely. Grapple, Tube and Tightrope do have a pretty good patern but they are not confirmed yet. The headers are now mostly understandable but a few have extra params that are unknown. Some of the new special types are also only tested on SF_ROOFTOP.GIZ for now.
+These types are not all fully understood yet and have been written slightly different based on what they need to do. Most of the types below are partially reverse engineered but they are not understood well enough to write them yet. Some interpretation is still speculation. Only ledge is intergrated for now but the other special types do have good paterns, good enough to parse them partially with usefull information. We have a good idea how the special types header works so they can alos be intergrated to make finding positions easier.
+> [!NOTE]
+> Some of the new special types are only tested on SF_ROOFTOP.GIZ for now.
 
 ## Special Types Headers
 
-The general structure of the header is pretty clear, only the second variable is not fully sure but very likely right. Some types do seem to use more then just the template header but that is further specified in the individual documentation.
+The general structure of the header is fully clear, allmost all special types use the exact same format but because of a few object data blocks that don't use the full header I can't expend it here even though most of the special blocks use the same extra 8 bytes structure after this start. Most headers have a version uint32 after the block length. I will note there which version is already seen for that specific type.
 
-```
-[uint32: header name length][ASCII: type specifier]
-[uint32: upcoming block size, starts after these 4 bytes]
-[uint32: some kind of type identifier]
-[uint32: amount of entries in this block]
-```
+**General header structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+| uint32 | 4 bytes | Header name length |
+| string | variable | Header name (no null)|
+| uint32 | 4 bytes | Block length |
+
+## Pole Section
+
+The pole sections places invisible poles on the map that are used to make other objects seem climable. So this type is made to easily make other objects work like a pole would.
+> [!TIP]
+> Examples of ingame use: The beanstalk in the second robber open world missions has a pole overlayed.
+
+**Pole header structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+|  -  | 12 bytes | Starts with general header |
+| uint32 | 4 bytes | Type version `(seen: 3)` |
+| uint32 | 4 bytes | Amount of entries |
+| - | 2 bytes | Most headers end with `00 00` |
+
+What is part of the entry is not fully clear. All the files I have seen only have one single pole entry. This makes it hard to define if the next section until the entry name belongs to the header or entry itself.
+> [!NOTE]
+> Also only tested on one file for now. Needs more.
+
+**Pole entry structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+| float32 | 4 bytes | Height of the pole |
+| float32 | 4 bytes | With of the pole |
+|  -  | 32 bytes | Unknown (seen with only zeroes) |
+| uint8 | 1 bytes | length: (name + null) |
+| string | variable | Entry name + null |
+| float32 | 12 bytes | x,y,z coördinates |
+| - | 10 bytes | Unknown (seen with only zeroes) |
+
+The empty blocks are still a mystery but those might also be empty space. This type is rearely used so it is a bit harder to find many test examples for testing.
+> [!NOTE]
+> The name of this type might seem to refer to the parkour poles/pipes but these are different. These poles can only be placed over objects with mesh and go straight up.
+
+**Open questions:** what do the 2 empty blocks mean? Is it just padding?
 
 ## Ledge Section
 
-Header signature: 4-byte length prefix (`05 00 00 00`) followed by ASCII `"Ledge"` (no null terminator on the class name itself — the length is explicit, just like with coins).
+What kind of objects Ledge specificly holds is not fully clear. For now these are observed as the ledges which Chase can hold on to parkour. It could hold more then only that kind of ledge but that needs to be figured out first.
 
-```
-[generic template header]
-[uint32: might be a extra parameter but unknown]
-[2 bytes unknown]
-```
+**Ledge header structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+|   -  | 13 bytes | Starts with the general header |
+| uint32 | 4 bytes | Type version `(seen: 10)` |
+| uint32 | 4 bytes | Amount of entries |
+| uint32 | 4 bytes | Unkown yet (often seen 0) |
+| - | 2 bytes | Most headers end with `00 00` |
+> The type version most of the time changes the amount of data in the specific header.
 
-This is followed by a series of individual, named point entries (`ledge1`, `ledge2`, ... sequentially numbered, with gaps in the numbering):
+The entries could also have a identifiër for what type it is in them but that needs some research in the unknown blocks below.
 
-```
-[1 byte: nameLen][name: e.g. "ledge49"][00 null]
-[intermediate block of variable length — not fully decoded]
-[1 byte: linkNameLen][link name: e.g. "ledge"][00 null]   ← optional, not every entry has this
-[12 bytes: position x,y,z floats]
-[footer, variable length — mostly zeros]
-```
+**Ledge entry structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+| uint8 | 1 byte | Length: (name + null) |
+| string | variable | name + null |
+|  -  | variable | Unknown content |
+| uint8 | 1 bytes | Length (linked name + null) |
+| string | variable | Linked name + null |
+| float32 | 12 bytes | x,y,z coördinates |
+|  -  | variable | Ends with unknown block (mostly zeroes) |
 
-Each ledge refers to another ledge name through the `linkedTo` field. This forms a **graph** (not a strict linear chain) — some links are bidirectional (A→B and later B→A with nearly identical positions), while others are one-way or entirely absent (standalone ledges without a link but this might be a problem in the parsing system now or just a thing the game does).
 
-**Recommended processing:** treat `linkedTo` as an edge in a graph and determine connected components (BFS/DFS) to group related ledges together — see `groupLedgesByConnection` in the parser. Verified: chains with small, incremental position changes (for example only along the z-axis) correspond to the parkour hanging ledge structure which probably get their inbetween pole position and length determined by the positions of the ledge entries.
+Each ledge refers to another ledge name through the `linked name`. This forms a **graph** (not a strict linear chain) — some links are bidirectional (A→B and later B→A with nearly identical positions), while others are one-way or entirely absent (standalone ledges without a link but this might be a problem in the parsing system now).
+> [!NOTE]
+> Verified: chains with small, incremental position changes (for example only along the z-axis) correspond to the parkour hanging ledge structure which probably get their inbetween pole position and length determined by the positions of the ledge entries
 
-**Open questions:** the exact contents of the intermediate block before the (optional) link name, the precise meaning of the footer bytes, and confirm object type between files.
+**Recommended processing:** treat `linkedTo` as an edge in a graph and determine connected components (BFS/DFS) to group related ledges together — done by `groupLedgesByConnection` in the parser.
+
+**Open questions:** the exact contents of the intermediate block before the (optional) link name, the precise meaning of the ending bytes, and look if Ledges holds one kind object or multiple different.
 
 ## TightRope Section
 
-Header signature: 4-bytes length prefix + ASCII `"TightRope"`, followed by the header. 
+This type places tightropes in the game like the name suggests. These can be al sorts of ropes/chains, *see: STUFF/ROPES.txt*, much about this type is still unknown but some key parts can already be parsed.
 
-```
-[uint32: length=9]["TightRope"]
-[Generic template header]
-```
+**TightRope header structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+|  -  | 17 bytes | starts with general header |
+| uint32 | 4 bytes | type version `(seen: 19)`|
+| uint32 | 4 bytes | amount of entries |
 
-Per rope entry (numbered, e.g. `tightrope1`, `tightrope2`, and an unnamed `tightrope`):
+The standalone entries have a lot of unknown data for now but position data can be gathered and edited.
 
-```
-[1 byte: nameLen][name][00 null]
-[N × 12 bytes: consecutive (x,y,z) float triples — variable count, until the first invalid/garbage triple]
-```
+**TightRope entry structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+| uint8 | 1 byte | length: (name + null) |
+| string | variable | name + null |
+| float32 | 12 bytes | x,y,z coördinates startingpoint |
+| float32 | 12 bytes | x,y,z coördinates endpoint |
+| float32 | 12 bytes | x,y,z unknown |
+| float32 | 12 bytes | x,y,z unkown |
+| - | 28 bytes | unknown, has resonable floats in it |
+| uint8 | 1 byte | length: (name + null) |
+| string | variable | name + null (exact copy of first name) |
+| float32 | 12 bytes | x,y,z unknown |
+| - | 10 bytes | unknown data (test has resonable int at +4) |
+> [!WARNING]
+> Not enough entries has this been tested on and the bigger entry with six sets of coördinates is not included yet.
 
 Each rope name appears **twice**:
-- 1st occurrence: the first to are the positions of the bases that get connected by the game itself. The other 2 are unknown and have weird placements as coördinates. + 2 or 1 additional slot(s) might be in there too that do not appear to contain valid positions (possibly separate parameters, not confirmed).
-- 2nd occurrence: 1 (or 2) point(s), sometimes identical to one of the 4 main points, sometimes a completely new standalone point — presumably an anchor point for interaction or possibly the spawning point for the start of end object of the rope. This needs to be investigated more.
+- 1st occurrence: the first 2 sets of coördinates define the base and the end of the rope but the 2/4 additional slots are not known why they exist but they do. More testing required.
+- 2nd occurrence: 1 (or 2) point(s), sometimes identical to one of the 4 main points, sometimes a completely new standalone point - I don't know the purpose of them.
 
-**Parsing stop condition:** as soon as an entry no longer yields a valid (x,y,z) triple, you have exited the TightRope section and are probably already in the regular object list (GizObstacle/GIZSIMPLEPROPOBJECT, etc.).
-
-**Open question:** the exact meaning of the 2 additional slots in the first occurrence and the relationship between the anchor point and the curve.
+**Open question:** the exact meaning of the 2/4 additional slots in the first occurrence, the purpose of the second occurence and the unkown blocks inbetween.
 
 ## Grapple Section
 
-Header: 4-byte length prefix + ASCII `"Grapple"` + header ints.
+What the grapple type exactly does is not known yet but we can at least get some information out of it and parsing it might give more insight in what it does ingame. This header structure does need te be updated later because this is based on to little research. Take the structure with a grain of salt for now.
 
-```
-[uint32: length=7]["Grapple"]
-[Generic template header]
-[unknown variable-length remainder of the header before the first name]
-```
+**Grapple header structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+|  -  | 15 bytes | Starts with general header |
+| uint32 | 4 bytes | Type version `(seen: 18)` |
+| uint32 | 4 bytes | Amount of entries |
+| uint32 | 4 bytes | unknown could also be 2x (u)int16 |
+| float32 | 4 bytes | unknown |
+| uint32 | 4 bytes | unknown could also be 2x (u)int16 |
+|  -  | 12 bytes | unknown |
+| float32 | 4 bytes | unknown |
+|  -  | 50 bytes | unknown |
 
-Per grapple point (numbered with gaps by devs, e.g. `grapple1`, `grapple2`, `grapple4`, and an unnamed `grapple`):
+The specific entries are as hard to understand. This type will need a lot more work.
 
-```
-[1 byte: nameLen][name][00 null]
-[12 bytes: position x,y,z]
-[1st footer: 25 bytes — contains, among other things, the presumed trigger radius]
-repetition of the same name:
-[1 byte: nameLen][name][00 null]
-[12 bytes: identical position]
-[2nd footer: variable length (up to 88 bytes observed) — are probably additional parameters]
-```
+**Grapple entry structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+| uint8 | 1 byte | length: (name + null) |
+| string | variable | name + null |
+| float32 | 12 bytes | x,y,z coördinates |
+| - | 25 bytes | first footer |
+| uint8 | 1 byte | length: (name + null) |
+| string | variable | name + null |
+| float32 | 12 bytes | same x,y,z again |
+| - | variable | second footer | 
 
-### 1st Footer — Identified Fields (offsets relative to footer start):
-```
-offset 2  : float, always 1.0 (constant)
-offset 7  : float — presumed trigger radius/swing length (values 1.08–1.70 observed)
-offset 16 : byte ("flagA") — observed values 0 and 7
-offset 19 : byte ("flagB") — correlates with radius: radius 1.7 → flagB 35 (0x23); smaller radius → flagB 3 (0x03)
-```
+These are the hypothesis of what the footers could mean or contain for now. Var types could also still change.
 
-### 2nd Footer — Additional Floats Not Yet Fully Understood
+**Footer 1 hypothesis structure:**
+| Offset | Type | Size | Description |
+| :-- | :-- | :-- | :-- |
+| 3 | float32 | 4 bytes | some kind of float only seen as: `1.0` |
+| 7 | bool | 1 byte | unknown |
+| 8 | float32 | 4 bytes | resonable float but offset 10 also gives a resonable float |
+| 12 | bool | 1 byte | unknown |
+| 13 | int16 | 2 bytes | unknown |
+| 15 | int16 | 2 bytes | unknown |
+| 17 | int16 | 2 bytes | unknown seen values: `0 and 7` |
+| 19 | int16 | 2 bytes | unknown |
 
-Contains a varying number of small floats per grapple (often around 0.5, or an outlier such as -71.68 that may represent an angle in degrees). Not every grapple contains the same amount of data here; some are nearly empty.
-
-**Hypothesis (not yet 100% confirmed, but consistent with in-game behavior):** grapples with radius ≈1.7/flagB 35 are points that trigger an interaction popup from a larger range and/or multiple angles; grapples with a smaller radius/flagB 3 are stricter, short-range triggers. One grapple with a notable angle value (-71.68°) in the 2nd footer may have a unique swing direction or might be a trigger for a specific action.
 
 
-# Coins And Other Pickups Section (GizmoPickup)
+**Footer 2 hypothesis structure:**
 
-Header signature: hex `47697a6d6f5069636b7570` = ASCII `"GizmoPickup"`.
+| Offset | Type | Size | Description |
+| :-- | :-- | :-- | :-- |
+| 11 | int32 | 4 bytes | unknown if even int32 |
+| 15 | float32 | 4 bytes | might be some angel |
+| 19 | int32 | 4 bytes | unknown int length yet |
+| 34 | float32 | 4 bytes | float might also be some angle |
+| 38 | int32 | 4 bytes | some kind of int but size unknown |
 
-```
-[header: "GizmoPickup" as a standalone string, no length prefix in this form]
-... at offset headerIndex+19: [uint32LE: entry count]
-... entries begin at offset headerIndex+51
-```
+>[!CAUTION]
+> This whole section will probably get updated pretty quickly because it is mostly guessing now.
 
-Per coin entry:
-```
-[4 bytes: typeHex]       → matches known coin-type table (see objectsList in parser)
-[6 bytes unknown/padding]
-[1 byte: strLen, including null terminator]
-[string of strLen-1 bytes][00 null]
-[4 bytes float: x]
-[4 bytes float: y]
-[4 bytes float: z]
-[10-byte footer, fixed — contents not yet decoded]
-```
+**Open question:** a lot must be done still but just testing values and coming up with new idea's is the most important.
 
-Known type hex values (see `objectsList` in the parser code):
-```
-67000000 Coin_Gold_1      73000000 Coin_Silver_1    6a000000 Coin_Blue_1
-67000002 Coin_Gold_2      73000002 Coin_Silver_2     50000000 Coin_Blue_2
-70000000 Coin_Purple      77850000 Shield_TL         62000000 Coin_Blue_3
-78850000 Shield_TR        7a000000 Token_1           72000000 Brick_Red
-7a000400 Token_2          7a010000 Token_3
-```
+## Coins And Other Pickups Section (GizmoPickup)
 
-note: 
-These are know to have issues with the coins and pickups parser. They seem to have some strange formatting which confuses the parser so it writes garbage information.
-```
-- SCRAPYARD_ENTRANCE_TECH.GIZ,
-- MINE_CAVERN.GIZ,
-- MINE_FREEFALL_TECH.GIZ
-- MOONBASE2_ROCKETCOCKPIT.GIZ
-```
+GizmoPickups is most of the time a huge block in the file. It contains all kinds of pickups like coins, but also red bricks, character tokens and shieldpieces.
+Header signature in kestrel fusion map manager: hex `47697a6d6f5069636b7570` = ASCII `"GizmoPickup"`.
 
-# Regular Objects (GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT, ...)
+**Header GizmoPickup structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+| - | 19 bytes | Starts with standard header |
+| uint32 | 4 bytes | version `(seen: 14)` |
+| uint32 | 4 bytes | Amount of entries |
+| - | 4 bytes | unknown seen empty |
+| float32 | 4 bytes | Draw distance? |
+| float32 | 4 bytes | Scale? |
+| float32 | 4 bytes | unknown |
+| float32 | 4 bytes | unknown |
+| float32 | 4 bytes | unknown |
+| float32 | 4 bytes | unknown |
+| float32 | 4 bytes | unknown |
+| int16 | 2 bytes | unknown |
 
-These objects share one common pattern. There is **no global header with an entry count** for this entire list — the parser must use known class names as anchors and search backward from them to find the start of an entry.
+This is the first type of gizmo we can actually write now with the kestrel fusion launcher map manager.
 
-```
-[1 byte: nameLen, including null terminator]
-[name string of nameLen-1 bytes][00 null]
-[1 byte: classLen, including null terminator]
-[class/type string of classLen-1 bytes][00 null]
-[1 byte: idLen, including null terminator]
-[id string of idLen-1 bytes][00 null]   (idLen ≤ 1 → id = "UNKNOWN")
-[4 bytes float: x]
-[4 bytes float: y]
-[4 bytes float: z]
-[1 byte flag]
-[2 bytes int: rotY]
-[2 bytes int: rotX]
-[endLine: variable length (includes flag and rotation), see below]
-```
+**GizmoPickup entry structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+| hex | 4 bytes | this hex defines the kind of pickup spawned |
+| - | 6 bytes | unknown (padding?) |
+| uint8 | 1 bytes | length: (name + null) |
+| string | variable | name + null |
+| float32 | 12 bytes | x,y,z coördinates |
+| - | 10 bytes | unknown |
+
+The different types of pickups can be found and written by using these hex paterns:
+
+**Known type hex values (see `objectsList` in the parser code):**
+| Object | Hex | | Object | Hex |
+| :-- | :-- | :-- | :-- | :-- |
+| Coin_Gold_1 | `67000000` | | Coin_Silver_1 | `73000000` |
+| Coin_Gold_2 | `67000002` | | Coin_Silver_2 | `73000002` |
+| Coin_Blue_1 | `6a000000` | | Coin_Purple | `70000000` |
+| Coin_Blue_2 | `50000000` | | Token_1 | `7a000000` |
+| Coin_Blue_3 | `62000000` | | Token_2 | `7a000400` |
+| Shield_TL | `77850000` | | Token_3 | `7a010000` |
+| Shield_TR | `78850000` | | Brick_Red | `72000000` |
+
+> [!NOTE] 
+> These are know to have issues with the coins and pickups parser. They seem to have some strange formatting which confuses the parser so it writes garbage information.
+> - SCRAPYARD_ENTRANCE_TECH.GIZ
+> - MINE_CAVERN.GIZ
+> - MINE_FREEFALL_TECH.GIZ
+> - MOONBASE2_ROCKETCOCKPIT.GIZ
+
+## Regular Objects (GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT, ...)
+
+This is the most important part of the giz files for modding. These objects share one common pattern. There is **no global header with an entry count** for this entire list — the parser must use known class names as anchors and search backward from them to find the start of an entry.
+
+**Regular objects structure:**
+| Type | Size | Description |
+| :-- | :-- | :-- |
+| uint8 | 1 byte | length: (name + null) |
+| string | variable | name + null |
+| uint8 | 1 byte | length: (class name + null) |
+| string | variable | class name |
+| uint8 | 1 byte | id length (id + null) |
+| string | variable | id name + null |
+| float32 | 12 bytes | x,y,z coördinates |
+| - | variable | see endline structure |
 
 The type field is read **individually for each entry** — there is no "last seen type" inheritance. Known class names are only needed to (a) locate the first starting point in the buffer and (b) validate the boundary with the next entry.
 
-## EndLine Structure (Variable Length)
+### EndLine Structure (Variable Length)
 
 Based what is know now about the endline but most is just guessing:
 
-```
-[1 byte: flags]
-[2 bytes Int16LE: rotY (must be included empty for spawning endline)]
-[2 bytes Int16LE: rotX (must be included empty for spawning endline)]
-[1 byte unknown, possibly related to decompiled offset 0xc2]
-[4 bytes: int, unknown]
-[1 byte: AttachTo flag]
-  0x00 → no extra data, endLine ends here (total 8–9 bytes)
-  0x03 → [1 byte len][string][1 byte] (short name reference + 1 extra byte)
-  0x01 → [1 byte len][string][12 bytes (3 floats)] (name reference + position)
-```
+**Entry endline structure:**
+| Type | Size | Description | 
+| :-- | :-- | :-- |
+| bool | 1 byte | might be flag |
+| uint16 | 2 bytes | rotation y |
+| uint16 | 2 bytes | rotation x |
+| bool | 2 bytes | might be flags |
+| int32 | 4 bytes | unknown might be int |
+| - | 3 bytes | unknown |
+| int32 | 4 bytes | unknown might be int |
+| int8 | 1 byte | might be int8? |
+| uint8 | 1 byte | length: (link name + null) |
+| string | variable | name + null |
+| - | 3 bytes | unknown |
+| float32 | 4 bytes | likely float |
+| - | 5 bytes | unknown |
+| int32 | 4 bytes | possible int
 
-There is strong evidence that this reference name points to **another object in the same list** — probably an "attached to" or "trigger target" relationship. The length of the endLine differs exactly by the length difference of the referenced name (e.g. `iHWallRunPad1` versus `iHWallRunPad`: a 1-byte difference in endLine length).
+> [!CAUTION]
+> The endline needs to be researched more. Also the shorter version still needs to be added.
 
-**Important:** a fixed endLine size does not work. The robust approach is to scan forward until the next valid entry name is found (see `readEndBuf`/`isValidEntryAt` in the parser).
+The link name is a reference to a entry in **extra object blocks at the start of the file.** — it is probably just a link so the structure of the regular objects stay easy. The longer endline with the reference is used by a select small group of objects that for example need a target like `Catapult` objects. They do link to a block that has the same name as the class of the object itself (e.g. `GizObstacle`, `GIZSIMPLEPROBOBJECT` or `GizSpellit`).
 
-**Open question:** the exact meaning of most fields in the fixed 8–9 byte core (except rotY/rotX) has not yet been confirmed.
-
-
-## Common Parsing Strategy
-
-For all "named point list" sections (Ledge, TightRope, Grapple), the same approach applies:
-
-1. Search for the section name with a **validated length prefix** preceding it (prevents false matches such as "Grapple" inside "GrappleSatellite").
-2. Skip a fixed number of header integers (varies per section type — still determined empirically on a case-by-case basis, no universal constant).
-3. Search forward for the first valid `[lengthByte][printable name][00]` structure.
-4. Read position/data, then search **forward again** (not using a fixed offset!) for the next valid name to determine the footer size.
-5. Stop once no valid name/position can be found within a reasonable search window (100–200 bytes) — this is the signal that you have exited the section.
-
-See `findNextValidName`, `isValidEntryAt`, and `exploreNamedPointSection` in the parser code for the generic implementation of this approach.
-
-## Known Open Questions
-
-- Exact meaning of most "header ints" per section (Ledge, TightRope, Grapple) — some appear to be counts, others remain unidentified.
-- The intermediate block before the optional second name in Ledge entries.
-- The exact role of the 2 additional slots after the 4 main points in TightRope.
-- Full meaning of the 2nd footer in Grapple entries (aside from the trigger-radius hypothesis).
-- Includes section: minor ambiguity in the string-length counting method (see above).
-- There are likely more section types following this "length prefix + name + header ints + point list" pattern that have not yet been specifically investigated (e.g. Door, MiniCut, Message — these have been seen in raw dumps but not yet analyzed separately like Ledge/TightRope/Grapple).
-- Writing (saving modified/new data back into this format) has not yet been implemented for the "named point list" sections — only reading is currently robust.
+**Important:** There is a standard endline that can be used but it can not be used universally. The robust approach is to scan forward until the next valid entry name length is found. The endline must have the rotation cleaned at the start to be used in the map manager.
 
 ## Reference: Known Class/Section Names Observed So Far
 
-```
-GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT,
-Ledge, TightRope, Grapple, MiniCut, Door, Blowup, Ladder, GizSwitch,
-GizTimer, GizSuperBuild, Message, DefaultDecal
-```
-
 Not every name in this list has already been successfully parsed as a separate section type — some are included here purely because the names were visible in raw byte dumps.
+
+> [!NOTE]
+>
+> - GizObstacle
+> - GIZSIMPLEPROBOBJECT
+> - ComplexGizmo
+> - GizSpellit
+> - GizSuperBuild
+> - GizmoPickup
+> - TightRope
+> - MiniCut
+> - Grapple
+> - Ladder
+> - Ledge
+> - Blowup
+> - Techno
+> - Pole
+> - Tube
