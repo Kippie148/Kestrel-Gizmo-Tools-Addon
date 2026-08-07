@@ -2,6 +2,12 @@
 
 This document describes the findings from reverse engineering the `.GIZ` file format used in LEGO City Undercover. The format is binary, little-endian, and contains multiple sections, each with its own structure. Not everything is already understood — unknown or uncertain fields are marked as such.
 
+> [!CAUTION]
+> Complete new docs are being made and I'll link parts for now if they are done and have value.
+> These old ones do have some value so I keep it like this until there is a full replacement.
+
+Quick link to the new tightRope [docs](docs/sections/tightRope.md).
+
 ## General File Structure
 
 A `.GIZ` file broadly consists of:
@@ -102,39 +108,8 @@ Each ledge refers to another ledge name through the `linked name`. This forms a 
 
 ## TightRope Section
 
-This type places tightropes in the game like the name suggests. These can be al sorts of ropes/chains, *see: STUFF/ROPES.txt*, much about this type is still unknown but some key parts can already be parsed.
-
-**TightRope header structure:**
-| Type | Size | Description |
-| :-- | :-- | :-- |
-|  -  | 17 bytes | starts with general header |
-| uint32 | 4 bytes | type version `(seen: 19)`|
-| uint32 | 4 bytes | amount of entries |
-
-The standalone entries have a lot of unknown data for now but position data can be gathered and edited.
-
-**TightRope entry structure:**
-| Type | Size | Description |
-| :-- | :-- | :-- |
-| uint8 | 1 byte | length: (name + null) |
-| string | variable | name + null |
-| float32 | 12 bytes | x,y,z coördinates startingpoint |
-| float32 | 12 bytes | x,y,z coördinates endpoint |
-| float32 | 12 bytes | x,y,z unknown |
-| float32 | 12 bytes | x,y,z unkown |
-| - | 28 bytes | unknown, has resonable floats in it |
-| uint8 | 1 byte | length: (name + null) |
-| string | variable | name + null (exact copy of first name) |
-| float32 | 12 bytes | x,y,z unknown |
-| - | 10 bytes | unknown data (test has resonable int at +4) |
-> [!WARNING]
-> Not enough entries has this been tested on and the bigger entry with six sets of coördinates is not included yet.
-
-Each rope name appears **twice**:
-- 1st occurrence: the first 2 sets of coördinates define the base and the end of the rope but the 2/4 additional slots are not known why they exist but they do. More testing required.
-- 2nd occurrence: 1 (or 2) point(s), sometimes identical to one of the 4 main points, sometimes a completely new standalone point - I don't know the purpose of them.
-
-**Open question:** the exact meaning of the 2/4 additional slots in the first occurrence, the purpose of the second occurence and the unkown blocks inbetween.
+> [!NOTE]
+> This one is [overwritten[(docs/sections/tightRope.md).
 
 ## Grapple Section
 
