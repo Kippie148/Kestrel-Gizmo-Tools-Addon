@@ -16,8 +16,8 @@ The TightRope object is pretty understandable by name. It is a tight rope betwee
 | `0x1ae` | Ushort | 2 bytes | - | RotX 2 |
 | `0x1b0` | Ushort | 2 bytes | - | RotY 1 |
 | `0x1b2` | Ushort | 2 bytes | - | RotY 2 |
-| `0x1b4` | Bool | 1 byte | - | Base 1 invisible? |
-| `0x1b5` | Bool | 1 byte | - | Base 2 invisible? |
+| `0x1b4` | Bool | 1 byte | - | Base 1 invisible |
+| `0x1b5` | Bool | 1 byte | - | Base 2 invisible |
 | `0x1b6` | Char | 1 byte | If version != 2 | Unknown |
 | `0x238` | Uint8 | 1 byte | If version > 6 | Enum about rope typ from `ROPES.txt` |
 | `-` | Char | 1 byte | If version != 7 | Length of the AttachEndToSpecial |
@@ -30,7 +30,7 @@ The TightRope object is pretty understandable by name. It is a tight rope betwee
 | `0x245` | Uchar | 1 byte | if version > 10 | Unknown |
 | `0x246` | Bool | 1 byte | if version != 11 | Slow walking rope |
 | `0x247` | Uchar | 1 byte | if version > 12 | Unkown |
-| `0x248` | Bool | 1 byte | if version != 13 | Auto jump off? |
+| `0x248` | Bool | 1 byte | if version != 13 | Do not auto jump off |
 | `0x249` | Uchar | 1 byte | if version > 14 | Unknown |
 | `0x24a` | Uchar | 1 byte | if version != 15 | Unknown |
 | `0x24b` | Uchar | 1 byte | if version > 16 | Unknown |
