@@ -6,7 +6,7 @@ This document describes the findings from reverse engineering the `.GIZ` file fo
 > Complete new docs are being made and I'll link parts for now if they are done and have value.
 > These old ones do have some value so I keep it like this until there is a full replacement.
 
-Quick link to the new tightRope [docs](docs/sections/tightRope.md).
+Quick link to the new tightRope [docs](docs/sections/tightRope.md).  
 Quick link to the new MiniCut [docs](docs/sections/miniCut.md)
 
 ## General File Structure
