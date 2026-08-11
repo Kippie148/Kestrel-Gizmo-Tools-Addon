@@ -6,9 +6,9 @@ This document describes the findings from reverse engineering the `.GIZ` file fo
 > Complete new docs are being made and I'll link parts for now if they are done and have value.
 > These old ones do have some value so I keep it like this until there is a full replacement.
 
-Quick link to the new TightRope [docs](docs/sections/tightRope.md).
-Quick link to the new MiniCut [docs](docs/sections/miniCut.md).
-Quick link to the new GizmoPickup [docs](docs/sections/gizmopickup.md)
+Quick link to the new TightRope [docs](sections/tightRope.md).  
+Quick link to the new MiniCut [docs](sections/miniCut.md).  
+Quick link to the new GizmoPickup [docs](sections/gizmopickup.md).  
 
 ## General File Structure
 
@@ -111,7 +111,7 @@ Each ledge refers to another ledge name through the `linked name`. This forms a 
 ## TightRope Section
 
 > [!CAUTION]
-> TightRope is [overwritten](docs/sections/tightRope.md)!
+> TightRope is [overwritten](sections/tightRope.md)!
 
 ## Grapple Section
 
@@ -178,7 +178,7 @@ These are the hypothesis of what the footers could mean or contain for now. Var 
 ## Coins And Other Pickups Section (GizmoPickup)
 
 > [!CAUTION]
-> Pickups is [overwritten](docs/sections/GizmoPickup.md)!
+> Pickups is [overwritten](sections/GizmoPickup.md)!
 
 ## Regular Objects (GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT, ...)
 
