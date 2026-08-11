@@ -6,8 +6,9 @@ This document describes the findings from reverse engineering the `.GIZ` file fo
 > Complete new docs are being made and I'll link parts for now if they are done and have value.
 > These old ones do have some value so I keep it like this until there is a full replacement.
 
-Quick link to the new tightRope [docs](sections/TightRope.md).  
-Quick link to the new MiniCut [docs](sections/MiniCut.md)
+Quick link to the new TightRope [docs](docs/sections/tightRope.md).
+Quick link to the new MiniCut [docs](docs/sections/miniCut.md).
+Quick link to the new GizmoPickup [docs](docs/sections/gizmopickup.md)
 
 ## General File Structure
 
@@ -176,56 +177,8 @@ These are the hypothesis of what the footers could mean or contain for now. Var 
 
 ## Coins And Other Pickups Section (GizmoPickup)
 
-GizmoPickups is most of the time a huge block in the file. It contains all kinds of pickups like coins, but also red bricks, character tokens and shieldpieces.
-Header signature in kestrel fusion map manager: hex `47697a6d6f5069636b7570` = ASCII `"GizmoPickup"`.
-
-**Header GizmoPickup structure:**
-| Type | Size | Description |
-| :-- | :-- | :-- |
-| - | 19 bytes | Starts with standard header |
-| uint32 | 4 bytes | version `(seen: 14)` |
-| uint32 | 4 bytes | Amount of entries |
-| - | 4 bytes | unknown seen empty |
-| float32 | 4 bytes | Draw distance? |
-| float32 | 4 bytes | Scale? |
-| float32 | 4 bytes | unknown |
-| float32 | 4 bytes | unknown |
-| float32 | 4 bytes | unknown |
-| float32 | 4 bytes | unknown |
-| float32 | 4 bytes | unknown |
-| int16 | 2 bytes | unknown |
-
-This is the first type of gizmo we can actually write now with the kestrel fusion launcher map manager.
-
-**GizmoPickup entry structure:**
-| Type | Size | Description |
-| :-- | :-- | :-- |
-| hex | 4 bytes | this hex defines the kind of pickup spawned |
-| - | 6 bytes | unknown (padding?) |
-| uint8 | 1 bytes | length: (name + null) |
-| string | variable | name + null |
-| float32 | 12 bytes | x,y,z coördinates |
-| - | 10 bytes | unknown |
-
-The different types of pickups can be found and written by using these hex paterns:
-
-**Known type hex values (see `objectsList` in the parser code):**
-| Object | Hex | | Object | Hex |
-| :-- | :-- | :-- | :-- | :-- |
-| Coin_Gold_1 | `67000000` | | Coin_Silver_1 | `73000000` |
-| Coin_Gold_2 | `67000002` | | Coin_Silver_2 | `73000002` |
-| Coin_Blue_1 | `6a000000` | | Coin_Purple | `70000000` |
-| Coin_Blue_2 | `50000000` | | Token_1 | `7a000000` |
-| Coin_Blue_3 | `62000000` | | Token_2 | `7a000400` |
-| Shield_TL | `77850000` | | Token_3 | `7a010000` |
-| Shield_TR | `78850000` | | Brick_Red | `72000000` |
-
-> [!NOTE] 
-> These are know to have issues with the coins and pickups parser. They seem to have some strange formatting which confuses the parser so it writes garbage information.
-> - SCRAPYARD_ENTRANCE_TECH.GIZ
-> - MINE_CAVERN.GIZ
-> - MINE_FREEFALL_TECH.GIZ
-> - MOONBASE2_ROCKETCOCKPIT.GIZ
+> [!CAUTION]
+> Pickups is overwritten!
 
 ## Regular Objects (GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT, ...)
 
