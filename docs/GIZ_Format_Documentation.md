@@ -110,8 +110,8 @@ Each ledge refers to another ledge name through the `linked name`. This forms a 
 
 ## TightRope Section
 
-> [!NOTE]
-> This one is [overwritten](docs/sections/tightRope.md).
+> [!CAUTION]
+> TightRope is [overwritten](docs/sections/tightRope.md)!
 
 ## Grapple Section
 
@@ -178,7 +178,7 @@ These are the hypothesis of what the footers could mean or contain for now. Var 
 ## Coins And Other Pickups Section (GizmoPickup)
 
 > [!CAUTION]
-> Pickups is overwritten!
+> Pickups is [overwritten](docs/sections/GizmoPickup.md)!
 
 ## Regular Objects (GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT, ...)
 
