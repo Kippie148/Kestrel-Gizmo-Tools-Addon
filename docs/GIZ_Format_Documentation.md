@@ -6,13 +6,13 @@ This document describes the findings from reverse engineering the `.GIZ` file fo
 > Complete new docs are being made and I'll link parts for now if they are done and have value.
 > These old ones do have some value so I keep it like this until there is a full replacement.
 
-Quick link to the new GizObstacle [docs](docs/sections/GizObstacle.md).
-Quick link to the new TightRope [docs](docs/sections/tightRope.md).
-Quick link to the new MiniCut [docs](docs/sections/miniCut.md).
-Quick link to the new GizmoPickup [docs](docs/sections/gizmopickup.md).
-Quick link to the new Door [docs](docs/sections/Door.md).
-Quick link to the new Ledge [docs](docs/sections/Ledge.md).
-Quick link to the new Ladder [docs](docs/sections/Ladder.md).
+Quick link to the new GizObstacle [docs](sections/GizObstacle.md).  
+Quick link to the new TightRope [docs](sections/tightRope.md).  
+Quick link to the new MiniCut [docs](sections/miniCut.md).  
+Quick link to the new GizmoPickup [docs](sections/gizmopickup.md).  
+Quick link to the new Door [docs](sections/Door.md).  
+Quick link to the new Ledge [docs](sections/Ledge.md).  
+Quick link to the new Ladder [docs](sections/Ladder.md).  
 > [!WARNING]
 > The generic ending links do not work yet.
 
@@ -83,41 +83,14 @@ The empty blocks are still a mystery but those might also be empty space. This t
 What kind of objects Ledge specificly holds is not fully clear. For now these are observed as the ledges which Chase can hold on to parkour. It could hold more then only that kind of ledge but that needs to be figured out first.
 
 **Ledge header structure:**
-| Type | Size | Description |
-| :-- | :-- | :-- |
-|   -  | 13 bytes | Starts with the general header |
-| uint32 | 4 bytes | Type version `(seen: 10)` |
-| uint32 | 4 bytes | Amount of entries |
-| uint32 | 4 bytes | Unkown yet (often seen 0) |
-| - | 2 bytes | Most headers end with `00 00` |
-> The type version most of the time changes the amount of data in the specific header.
 
-The entries could also have a identifiër for what type it is in them but that needs some research in the unknown blocks below.
-
-**Ledge entry structure:**
-| Type | Size | Description |
-| :-- | :-- | :-- |
-| uint8 | 1 byte | Length: (name + null) |
-| string | variable | name + null |
-|  -  | variable | Unknown content |
-| uint8 | 1 bytes | Length (linked name + null) |
-| string | variable | Linked name + null |
-| float32 | 12 bytes | x,y,z coördinates |
-|  -  | variable | Ends with unknown block (mostly zeroes) |
-
-
-Each ledge refers to another ledge name through the `linked name`. This forms a **graph** (not a strict linear chain) — some links are bidirectional (A→B and later B→A with nearly identical positions), while others are one-way or entirely absent (standalone ledges without a link but this might be a problem in the parsing system now).
 > [!NOTE]
-> Verified: chains with small, incremental position changes (for example only along the z-axis) correspond to the parkour hanging ledge structure which probably get their inbetween pole position and length determined by the positions of the ledge entries
-
-**Recommended processing:** treat `linkedTo` as an edge in a graph and determine connected components (BFS/DFS) to group related ledges together — done by `groupLedgesByConnection` in the parser.
-
-**Open questions:** the exact contents of the intermediate block before the (optional) link name, the precise meaning of the ending bytes, and look if Ledges holds one kind object or multiple different.
+> This one is [overwritten](sections/Ledge.md).
 
 ## TightRope Section
 
 > [!NOTE]
-> This one is [overwritten](docs/sections/tightRope.md).
+> This one is [overwritten](sections/tightRope.md).
 
 ## Grapple Section
 
