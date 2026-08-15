@@ -28,3 +28,5 @@ that fall under **Ledge**. See the **[lookup table](#Ledge-Type-Lookup-Table)** 
 > [!CAUTION]
 > Table needs to be tested and verified.
 > I will finish it soon after checking possible chars.
+
+Click **[here](../GIZ_Format_Documentation.md#Long-Header-Sections)** to go back to the section selection.

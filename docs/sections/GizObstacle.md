@@ -67,3 +67,5 @@ It is not fully clear if all kinds of entries have the same rol or how they are 
 > [!CAUTION]
 > There are 2 bytes **missing** from this structure!  
 > What they are, mean or do is unknown.
+
+Click **[here](../GIZ_Format_Documentation.md#Long-Header-Sections)** to go back to the section selection.
