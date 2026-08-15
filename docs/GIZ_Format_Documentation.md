@@ -6,9 +6,15 @@ This document describes the findings from reverse engineering the `.GIZ` file fo
 > Complete new docs are being made and I'll link parts for now if they are done and have value.
 > These old ones do have some value so I keep it like this until there is a full replacement.
 
-Quick link to the new TightRope [docs](sections/TightRope.md).  
-Quick link to the new MiniCut [docs](sections/MiniCut.md).  
-Quick link to the new GizmoPickup [docs](sections/GizmoPickup.md).  
+Quick link to the new GizObstacle [docs](docs/sections/GizObstacle.md).
+Quick link to the new TightRope [docs](docs/sections/tightRope.md).
+Quick link to the new MiniCut [docs](docs/sections/miniCut.md).
+Quick link to the new GizmoPickup [docs](docs/sections/gizmopickup.md).
+Quick link to the new Door [docs](docs/sections/Door.md).
+Quick link to the new Ledge [docs](docs/sections/Ledge.md).
+Quick link to the new Ladder [docs](docs/sections/Ladder.md).
+> [!WARNING]
+> The generic ending links do not work yet.
 
 ## General File Structure
 
@@ -110,8 +116,8 @@ Each ledge refers to another ledge name through the `linked name`. This forms a 
 
 ## TightRope Section
 
-> [!CAUTION]
-> TightRope is [overwritten](sections/TightRope.md)!
+> [!NOTE]
+> This one is [overwritten](docs/sections/tightRope.md).
 
 ## Grapple Section
 
@@ -178,7 +184,7 @@ These are the hypothesis of what the footers could mean or contain for now. Var 
 ## Coins And Other Pickups Section (GizmoPickup)
 
 > [!CAUTION]
-> Pickups is [overwritten](sections/GizmoPickup.md)!
+> Pickups is overwritten!
 
 ## Regular Objects (GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT, ...)
 
