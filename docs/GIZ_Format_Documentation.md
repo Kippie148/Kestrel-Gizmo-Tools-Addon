@@ -7,9 +7,9 @@ This document describes the findings from reverse engineering the `.GIZ` file fo
 > These old ones do have some value so I keep it like this until there is a full replacement.
 
 Quick link to the new GizObstacle [docs](sections/GizObstacle.md).  
-Quick link to the new TightRope [docs](sections/tightRope.md).  
-Quick link to the new MiniCut [docs](sections/miniCut.md).  
-Quick link to the new GizmoPickup [docs](sections/gizmopickup.md).  
+Quick link to the new TightRope [docs](sections/TightRope.md).  
+Quick link to the new MiniCut [docs](sections/MiniCut.md).  
+Quick link to the new GizmoPickup [docs](sections/GizmoPickup.md).  
 Quick link to the new Door [docs](sections/Door.md).  
 Quick link to the new Ledge [docs](sections/Ledge.md).  
 Quick link to the new Ladder [docs](sections/Ladder.md).  
