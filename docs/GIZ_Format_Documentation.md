@@ -7,12 +7,15 @@ This document describes the findings from reverse engineering the `.GIZ` file fo
 > These old ones do have some value so I keep it like this until there is a full replacement.
 
 Quick link to the new GizObstacle [docs](sections/GizObstacle.md).  
-Quick link to the new TightRope [docs](sections/TightRope.md).  
-Quick link to the new MiniCut [docs](sections/MiniCut.md).  
-Quick link to the new GizmoPickup [docs](sections/GizmoPickup.md).  
+Quick link to the new GizSpellIt [docs](sections/GizSpellIt.md).  
+Quick link to the new TightRope [docs](sections/tightRope.md).  
+Quick link to the new MiniCut [docs](sections/miniCut.md).  
+Quick link to the new GizmoPickup [docs](sections/gizmopickup.md).  
 Quick link to the new Door [docs](sections/Door.md).  
 Quick link to the new Ledge [docs](sections/Ledge.md).  
 Quick link to the new Ladder [docs](sections/Ladder.md).  
+Quick link to the new Pole [docs](sections/Pole.md).  
+Quick link to the new Tube [docs](sections/Tube.md).  
 > [!WARNING]
 > The generic ending links do not work yet.
 
@@ -49,34 +52,10 @@ The pole sections places invisible poles on the map that are used to make other 
 > [!TIP]
 > Examples of ingame use: The beanstalk in the second robber open world missions has a pole overlayed.
 
-**Pole header structure:**
-| Type | Size | Description |
-| :-- | :-- | :-- |
-|  -  | 12 bytes | Starts with general header |
-| uint32 | 4 bytes | Type version `(seen: 3)` |
-| uint32 | 4 bytes | Amount of entries |
-| - | 2 bytes | Most headers end with `00 00` |
-
-What is part of the entry is not fully clear. All the files I have seen only have one single pole entry. This makes it hard to define if the next section until the entry name belongs to the header or entry itself.
-> [!NOTE]
-> Also only tested on one file for now. Needs more.
-
 **Pole entry structure:**
-| Type | Size | Description |
-| :-- | :-- | :-- |
-| float32 | 4 bytes | Height of the pole |
-| float32 | 4 bytes | With of the pole |
-|  -  | 32 bytes | Unknown (seen with only zeroes) |
-| uint8 | 1 bytes | length: (name + null) |
-| string | variable | Entry name + null |
-| float32 | 12 bytes | x,y,z coördinates |
-| - | 10 bytes | Unknown (seen with only zeroes) |
 
-The empty blocks are still a mystery but those might also be empty space. This type is rearely used so it is a bit harder to find many test examples for testing.
 > [!NOTE]
-> The name of this type might seem to refer to the parkour poles/pipes but these are different. These poles can only be placed over objects with mesh and go straight up.
-
-**Open questions:** what do the 2 empty blocks mean? Is it just padding?
+> This one is [overwritten](sections/Pole.md).
 
 ## Ledge Section
 
@@ -156,8 +135,8 @@ These are the hypothesis of what the footers could mean or contain for now. Var 
 
 ## Coins And Other Pickups Section (GizmoPickup)
 
-> [!CAUTION]
-> Pickups is overwritten!
+> [!NOTE]
+> This one is [overwritten](sections/GizmoPickup.md).
 
 ## Regular Objects (GizObstacle, ComplexGizmo, GizItem, GizSpellIt, GIZSIMPLEPROPOBJECT, ...)
 
