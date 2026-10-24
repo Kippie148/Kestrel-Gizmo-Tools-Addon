@@ -26,6 +26,7 @@ It exists out of three programs that can help you in the gizmo spawning process 
 - A interactive world map, which can show objects that the game itself spawns with some usefull information and it can help you find the right coördinates for your new gizmo.
 ---
 ![Interactive world map UI](png/interactive-world-map.png)
+---
 - A gizmo file reader, which can fully read gizmo files and the different sections in detail so it also provides more then enough information to spawn gizmo's yourself or discover about the more complex gizmo sections.  
 ---
 ![Gizmo file reader UI](png/giz-file-reader.png)
