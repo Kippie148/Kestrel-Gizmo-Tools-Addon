@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gizmo World Map</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <!-- Top bar -->
+        <header class="topbar">
+
+            <div class="topbar-title">
+                <span>Gizmo World Map</span>
+            </div>
+
+            <div class="topbar-actions">
+                <button id="btn-reset" class="button">
+                    Reset View
+                </button>
+            </div>
+
+        </header>
+
+
+        <!-- Map area -->
+        <section class="map-wrapper">
+
+            <!-- Map toolbar -->
+            <div class="map-toolbar">
+
+                <div class="map-filter">
+                    <label for="object-type">Object Type</label>
+                    <select id="object-type" class="input">
+                        <option value="">Select type...</option>
+                    </select>
+                </div>
+
+                <div id="object-subtype-filter" class="map-filter">
+                    <label for="object-subtype">Sub Type</label>
+                    <select id="object-subtype" class="input">
+                        <option value="">Select subtype...</option>
+                    </select>
+                </div>
+
+
+                <div id="object-count" class="object-count">
+                    0 objects
+                </div>
+
+
+                <div class="map-toolbar-spacer"></div>
+
+
+                <div class="map-search">
+
+                    <input id="object-search"
+                           class="input"
+                           type="text"
+                           placeholder="Filter objects...">
+
+                </div>
+
+                <label class="checkbox-row">
+                    <input id="toggle-waypoint" type="checkbox">
+                    <span>Select Point Mode</span>
+                </label>
+
+                <label class="checkbox-row">
+                    <input id="toggle-grid" type="checkbox">
+                    <span>Grid</span>
+                </label>
+
+
+                <label class="checkbox-row">
+                    <input id="toggle-icons"
+                           type="checkbox"
+                           checked>
+
+                    <span>Objects</span>
+                </label>
+
+            </div>
+
+
+            <div id="map-container" class="map-container">
+
+                <div id="map-viewer" class="map-viewer"></div>
+
+                <canvas id="map-canvas"
+                        class="map-canvas"></canvas>
+
+                <div class="map-coordinate-display">
+                    <span>X</span>
+                    <strong id="coordinate-x">---</strong>
+
+                    <span>Y</span>
+                    <strong id="coordinate-y">---</strong>
+
+                    <span>Z</span>
+                    <strong id="coordinate-z">---</strong>
+                </div>
+
+
+                <!-- Map information panels -->
+
+                <div class="map-panels">
+
+                    <!-- Waypoint -->
+
+                    <div id="waypoint-info" class="waypoint-info">
+
+                        <div class="waypoint-header">
+                            <span>Selected Point</span>
+
+                            <button id="btn-clear-waypoint"
+                                    class="clear-selection"
+                                    type="button">
+                                ×
+                            </button>
+                        </div>
+
+                        <div class="waypoint-content">
+
+                            <div class="waypoint-data">
+
+                                <span class="waypoint-data-label">
+                                    X
+                                </span>
+
+                                <span id="waypoint-x"
+                                      class="waypoint-data-value">
+                                    ---
+                                </span>
+
+                                <span class="waypoint-data-label">
+                                    Z
+                                </span>
+
+                                <span id="waypoint-z"
+                                      class="waypoint-data-value">
+                                    ---
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Selected object -->
+
+                    <div id="selected-object"
+                         class="selected-object">
+
+                        <div class="selected-object-header">
+                            <span>Selected Object</span>
+
+                            <button id="btn-clear-selection"
+                                    class="clear-selection"
+                                    type="button">
+                                ×
+                            </button>
+                        </div>
+
+                        <div id="selected-object-content"
+                             class="selected-object-content">
+
+                            <div class="selected-empty">
+                                Click an object on the map
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Object tooltip -->
+
+                <div id="object-tooltip"
+                     class="object-tooltip hidden">
+
+                    <div id="tooltip-name"
+                         class="tooltip-name">
+                        Object
+                    </div>
+
+                    <div class="tooltip-row">
+                        <span>Type</span>
+                        <span id="tooltip-type">---</span>
+                    </div>
+
+                    <div class="tooltip-row">
+                        <span>Class</span>
+                        <span id="tooltip-class">---</span>
+                    </div>
+
+                    <div class="tooltip-row">
+                        <span>Position</span>
+                        <span id="tooltip-position">---</span>
+                    </div>
+
+                    <div id="tooltip-source"
+                         class="tooltip-source">
+                        ---
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="lib/openseadragon/openseadragon.min.js"></script>
+    <script type="module"
+            src="js/renderer.js"></script>
+
+</body>
+
+</html>

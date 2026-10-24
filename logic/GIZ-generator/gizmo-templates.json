@@ -1,0 +1,57 @@
+{
+    "1.0": {
+        "otherObjects": [
+            {
+                "path": "Some path",
+
+                "com": "No comment",
+
+                "imports": [],
+
+                "objectsNames": [],
+
+                "newObjects": [
+                    {
+                        "type": "Some type",
+
+                        "name": "",
+
+                        "pos": [0, 0, 0],
+
+                        "rotY": 0,
+
+                        "rotX": 0
+                    },
+                    {
+                        "type": "Some type",
+
+                        "name": "",
+
+                        "class": "Some class",
+
+                        "pos": [0, 0, 0],
+
+                        "rotY": 0,
+
+                        "rotX": 0
+                    }
+                ],
+
+                "newCoins": [
+                    {
+                        "type": 73000000,
+
+                        "name": "",
+
+                        "pos": [0, 0, 0]
+                    }
+                ]
+            }
+        ]
+    },
+    
+    "2.0": {
+        "presetGizmo": {},
+        "manualEdit": {}
+    }
+}

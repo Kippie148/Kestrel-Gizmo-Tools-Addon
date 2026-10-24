@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gizmo JSON Generator</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="generator-app">
+
+        <!-- TOPBAR -->
+        <header class="generator-topbar">
+
+            <div class="generator-title">
+                Gizmo JSON Generator
+            </div>
+
+            <div class="current-mod-box">
+
+                <span class="mod-label">
+                    Current Mod:
+                </span>
+
+                <span class="mod-name">
+                    Any mod name
+                </span>
+
+            </div>
+
+            <div class="generator-topbar-actions">
+
+                <button class="secondary-btn">
+                    Load JSON
+                </button>
+
+                <button class="secondary-btn">
+                    Generate JSON
+                </button>
+
+                <button class="primary-btn">
+                    Save Changes To File
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- MAIN -->
+        <main class="generator-main">
+
+
+            <!-- LEFT -->
+            <section class="generator-panel left-panel">
+
+                <div class="panel-header">
+                    File Tree
+                </div>
+
+
+                <div class="panel-content left-content">
+
+                    <!-- DYNAMIC OBJECT TREE -->
+                    <div id="object-tree" class="object-tree"></div>
+
+
+                    <!-- TREE ACTIONS -->
+                    <div class="tree-actions">
+
+                        <button class="delete-btn">
+                            Delete
+                        </button>
+
+                        <button class="edit-btn">
+                            Edit
+                        </button>
+
+                        <button class="add-btn">
+                            Add
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- RIGHT -->
+            <section class="generator-panel right-panel">
+
+                <div class="panel-header">
+                    Gizmo Template
+                </div>
+
+
+                <div class="panel-content right-content">
+
+                    <!-- DYNAMIC OBJECT CONTENT -->
+                    <div id="dynamic-content"></div>
+
+
+                    <!-- OPTIONS -->
+                    <div class="options-box">
+
+                        <div class="options-title">
+                            Options
+                        </div>
+
+                        <label class="checkbox-row">
+
+                            <input type="checkbox" id="check-paths" checked>
+
+                            <span>
+                                Check for bad names and paths in GIZ path and builders. (recommended)
+                            </span>
+
+                        </label>
+
+                        <label class="checkbox-row">
+
+                            <input type="checkbox">
+
+                            <span>
+                                Try to auto detect builder. (still in development)
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- ACTION -->
+                    <div class="bottom-actions">
+
+                        <button class="add-btn">
+                            Add Object
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script type="module" src="./js/renderer.js"></script>
+
+</body>
+</html>

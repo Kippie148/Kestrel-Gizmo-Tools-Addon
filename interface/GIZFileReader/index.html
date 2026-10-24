@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIZ Inspector</title>
+ 
+    <link rel="stylesheet" href="style.css">
+</head>
+ 
+<body>
+ 
+    <div class="app">
+ 
+        <!-- TOPBAR -->
+        <header class="topbar">
+ 
+            <input
+                id="input-search"
+                type="text"
+                placeholder="Search by name, id, type, position..."
+            >
+ 
+            <div class="topbar-actions">
+                <button id="btn-load-file">Load file</button>
+            </div>
+ 
+        </header>
+ 
+        <!-- MAIN CONTENT -->
+        <main class="main">
+
+            <!-- OBJECT LIST -->
+            <section class="panel list-panel">
+
+                <div class="panel-header">
+
+                    <div id="section-selector"
+                         class="section-selector">
+
+                        <button id="section-selector-button"
+                                class="section-selector-button"
+                                type="button">
+
+                            <span id="section-selector-name"
+                                  class="section-selector-name">
+                                Gizmo header
+                            </span>
+
+                            <span id="section-selector-count"
+                                  class="section-selector-count">
+                                0 Objects
+                            </span>
+
+                            <span class="section-selector-arrow">
+                                ▾
+                            </span>
+
+                        </button>
+
+                        <div id="section-selector-menu"
+                             class="section-selector-menu">
+
+                            <!-- Options are inserted dynamically -->
+
+                        </div>
+
+                    </div>
+
+                    <span id="object-count"
+                          class="object-count">
+                        Total 0 objects
+                    </span>
+
+                </div>
+
+                <div id="table-header"></div>
+
+                <div id="object-list"
+                     class="object-list">
+                </div>
+
+            </section>
+
+            <!-- DETAILS -->
+            <section class="panel details-panel">
+
+                <div class="panel-header">
+                    <span>Details</span>
+                </div>
+
+                <div id="details-content"
+                     class="details-content">
+                </div>
+
+            </section>
+
+            <!-- QUICK ACCESS -->
+            <aside class="panel files-panel">
+
+                <div class="panel-header">
+                    <span>Quick Access</span>
+                </div>
+
+                <ul id="file-access-list" class="file-access">
+
+                    <li>something.GIZ</li>
+                    <li>somethingelse.GIZ</li>
+                    <li>citysomething.GIZ</li>
+
+                </ul>
+
+                <div class="files-footer">
+                    <button id="btn-all-files" class="all-files-btn">
+                        All known files
+                    </button>
+                </div>
+
+            </aside>
+
+        </main>
+ 
+    </div>
+
+
+    <div id="knownFilesModal" class="modal-overlay">
+
+    <div class="modal-window">
+
+        <!-- HEADER -->
+        <div class="modal-header">
+
+            <div class="modal-title">
+                Known Files
+            </div>
+
+            <button
+                id="closeKnownFilesModal"
+                class="modal-close-btn">
+
+                ✕
+
+            </button>
+
+        </div>
+
+        <!-- DETECTION SECTION -->
+        <div class="modal-detection-section">
+
+            <div class="modal-section-title">
+                Detect Extra GIZ Files
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    id="autoGameScanBtn"
+                    class="modal-action-btn primary-modal-btn">
+
+                    Auto Game Scan
+
+                </button>
+
+                <button
+                    id="manualFolderScanBtn"
+                    class="modal-action-btn secondary-modal-btn">
+
+                    Manual Folder Scan
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- SEARCH -->
+        <div class="modal-search">
+
+            <input
+                id="knownFilesSearch"
+                type="text"
+                placeholder="Search cached GIZ files..."
+            >
+
+        </div>
+
+        <!-- FILE LIST -->
+        <div
+            id="knownFilesList"
+            class="known-files-list">
+
+        </div>
+
+    </div>
+
+</div>
+ 
+    <script type="module" src="./js/gizreader-main-page.js"></script>
+ 
+</body>
+</html>
