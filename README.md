@@ -19,12 +19,17 @@ This is a work in progress gizmo toolset for Lego City Undercover. It aims to si
 ## Quick Overview
 
 It exists out of three programs that can help you in the gizmo spawning process (or just discover more about the objects in the city):
-- A json generator, which represends the json file contents used by the kestrel fusion map-manager in a clean way and makes it easy to add/edit/delete objects or coins without ever touching the raw json files.  
+- A json generator, which represends the json file contents used by the kestrel fusion map-manager in a clean way and makes it easy to add/edit/delete objects or coins without ever touching the raw json files.
+--
 ![Json generator UI](png/object-json-generator.png)
-- A interactive world map, which can show objects that the game itself spawns with some usefull information and it can help you find the right coördinates for your new gizmo.  
+--
+- A interactive world map, which can show objects that the game itself spawns with some usefull information and it can help you find the right coördinates for your new gizmo.
+--
 ![Interactive world map UI](png/interactive-world-map.png)
-- A gizmo file reader, which can fully read gizmo files and the different sections in detail so it also provides more then enough information to spawn gizmo's yourself or discover about the more complex gizmo sections.  
+- A gizmo file reader, which can fully read gizmo files and the different sections in detail so it also provides more then enough information to spawn gizmo's yourself or discover about the more complex gizmo sections.
+-- 
 ![Gizmo file reader UI](png/giz-file-reader.png)
+--
 
 ## Installation
 
@@ -59,5 +64,5 @@ Click [here](docs/GIZ_Format_Documentation.md) for the documentation about the g
 
 ## Credits
 
-- [Lego City Undercover Decompilation](https://github.com/Nintendocustom/Lego-City-Undercover-Decompilation) - Thanks to Hannes and his project who helped with the gizmo research
+- [Lego City Undercover Decompilation](https://github.com/Nintendocustom/Lego-City-Undercover-Decompilation) - Thanks to Nintendocustom and his project who helped with the gizmo research
 - [OpenSeadragon](https://github.com/openseadragon/openseadragon) - Lib for the interactive world map control
